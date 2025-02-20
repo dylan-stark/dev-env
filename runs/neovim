@@ -2,3 +2,10 @@
 
 echo "hello from neovim"
 
+git clone -b v0.10.2 https://github.com/neovim/neovim.git ${HOME}/projects/neovim
+brew install cmake gettext lua@5.4
+
+cd ${HOME}/projects/neovim
+make CMAKE_BUILD_TYPE="RelWithDebInfo"
+sudo make install
+
