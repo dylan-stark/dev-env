@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
-tmux new-window -n foofoo
+tmux rename-window editor
+tmux new-window -n runner
+tmux previous-window
 
