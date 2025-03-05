@@ -2,7 +2,7 @@
 
 | **Mappings** | **Action** |
 |--------------|------------|
-| `<S+k>` | Hover pop-up: `vim.lsip.buf.hover()` |
+| `<S+k>` | Hover pop-up: `vim.lsp.buf.hover()` |
 | `<^+]>` | Jump to definition |
 | `<^+t>` | Jump back |
 
