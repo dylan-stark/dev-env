@@ -14,6 +14,7 @@ return {
 	},
 
 	config = function()
+        local capabilities = require('cmp_nvim_lsp').default_capabilities()
 		require('fidget').setup()
 		require('mason').setup()
 		require('mason-lspconfig').setup({
@@ -22,7 +23,9 @@ return {
 			},
 			handlers = {
 				function(server_name)
-					require("lspconfig")[server_name].setup {}
+					require("lspconfig")[server_name].setup {
+                        capabilities = capabilities,
+                    }
 				end,
 
 				["lua_ls"] = function()
@@ -51,7 +54,7 @@ return {
 			mapping = cmp.mapping.preset.insert({
 				['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
 				['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-				['<CR>'] = cmp.mapping.confirm({ select = true }),
+				['<C-y>'] = cmp.mapping.confirm({ select = true }),
 				['<C-Space>'] = cmp.mapping.complete(),
 			}),
 			sources = cmp.config.sources({
