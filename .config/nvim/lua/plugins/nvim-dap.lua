@@ -1,6 +1,7 @@
 return { {
     'mfussenegger/nvim-dap',
     dependencies = {
+        "leoluz/nvim-dap-go",
         "rcarriga/nvim-dap-ui",
         "nvim-neotest/nvim-nio",
         "williamboman/mason.nvim",
@@ -10,6 +11,7 @@ return { {
         local ui = require "dapui"
 
         require("dapui").setup()
+        require("dap-go").setup()
 
         vim.keymap.set("n", "<space>b", dap.toggle_breakpoint)
 
