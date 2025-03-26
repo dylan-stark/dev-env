@@ -5,3 +5,5 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # Adds installed Go binaries to PATH
 export PATH="${PATH}:${HOME}/go/bin"
 
+# Adds volta to PATH
+export PATH="${HOME}/.volta/bin:${PATH}"
