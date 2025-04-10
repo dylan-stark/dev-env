@@ -4,6 +4,10 @@ require("dylan-stark.rust")
 
 -- Relative line numbering
 vim.wo.relativenumber = true
+vim.wo.number = true
+
+-- Nicer scrolling
+vim.opt.scrolloff = 8
 
 -- LSP-specific bindings
 vim.api.nvim_create_autocmd('LspAttach', {
