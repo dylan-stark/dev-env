@@ -11,3 +11,9 @@ vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>")
 -- Celluar Automata
 vim.keymap.set("n", "<leader>fml", "<cmd>CellularAutomaton make_it_rain<CR>")
 vim.keymap.set("n", "<leader>gol", "<cmd>CellularAutomaton game_of_life<CR>")
+
+-- Yank to clipboard
+vim.keymap.set("v", "<leader>y", '"*y') -- yank this
+vim.keymap.set("n", "<leader>y", '"*y') -- prepare to yank
+vim.keymap.set("n", "<leader>Y", 'gg"*yG') -- yank whole file
+
