@@ -9,3 +9,5 @@
 | `z{t,z,b}` | Move current line to top, middle, or bottom of screen |
 | `{H,M,L}`  | Move cursor to top (high), middle, or bottom (low) |
 
+- `:%!jq` to format current buffer of JSON with `jq`
+
