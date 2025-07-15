@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Sources `.ready-tmux` from this directory or the one in `$HOME`.
+
 if [[ -x ".ready-tmux" ]]; then
     ./.ready-tmux
 elif [[ -x "$HOME/.ready-tmux" ]]; then
