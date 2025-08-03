@@ -29,12 +29,21 @@ execute() {
 
 log "---------- dev-env ----------"
 
+find_dirs() {
+    if [[ "$(uname)" == "Darwin" ]]; then
+        dirs=$(find . -mindepth 1 -maxdepth 1 -type d)
+    else
+        dirs=$(find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n")
+    fi
+    echo $dirs
+}
+
 copy_dir() {
     from=$1
     to=$2
 
     pushd $from > /dev/null
-    dirs=$(find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n")
+    dirs=$(find_dirs)
     for dir in $dirs; do
         execute rm -rf $to/$dir
         execute cp -r $dir $to/$dir

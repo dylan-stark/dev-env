@@ -34,11 +34,19 @@ execute() {
     "$@"
 }
 
+find_scripts() {
+    if [[ "$(uname)" == "Darwin" ]]; then
+        scripts=$(find ./runs -maxdepth 1 -mindepth 1 -perm +0111 -type f)
+    else
+        scripts=$(find ./runs -maxdepth 1 -mindepth 1 -perm /0111 -type f)
+    fi
+    echo $scripts
+}
+
 log "$script_dir -- $filter"
 
 cd $script_dir
-scripts=$(find ./runs -maxdepth 1 -mindepth 1 -perm /0111 -type f)
-
+scripts=$(find_scripts)
 for script in $scripts; do
     if echo "$script" | grep -qv "$filter"; then
         log "Filtering $script"
