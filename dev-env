@@ -34,7 +34,7 @@ copy_dir() {
     to=$2
 
     pushd $from > /dev/null
-    dirs=$(find . -mindepth 1 -maxdepth 1 -type d)
+    dirs=$(find . -mindepth 1 -maxdepth 1 -type d -printf "%P\n")
     for dir in $dirs; do
         execute rm -rf $to/$dir
         execute cp -r $dir $to/$dir
@@ -56,3 +56,10 @@ copy_dir .local ${HOME}/.local
 copy_file env/.zprofile ${HOME}
 copy_file env/.ready-tmux ${HOME}
 
+if [[ -d ${ZSH_CUSTOM} ]]; then
+    copy_file env/oh-my-zsh.zsh ${ZSH_CUSTOM}
+elif [[ -d ${HOME}/.oh-my-zsh/custom ]]; then
+    copy_file env/oh-my-zsh.zsh ${HOME}/.oh-my-zsh/custom
+else
+    echo "No custom ZSH location. Skipping oh-my-zsh.zsh copy."
+fi

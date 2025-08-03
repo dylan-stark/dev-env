@@ -37,7 +37,7 @@ execute() {
 log "$script_dir -- $filter"
 
 cd $script_dir
-scripts=$(find ./runs -maxdepth 1 -mindepth 1 -perm +0111 -type f)
+scripts=$(find ./runs -maxdepth 1 -mindepth 1 -perm /0111 -type f)
 
 for script in $scripts; do
     if echo "$script" | grep -qv "$filter"; then
