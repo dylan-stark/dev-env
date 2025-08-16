@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 
 if [[ "$(uname)" == "Linux" ]]; then
-    if lsb_release -a 2>/dev/null | grep -q "Debian"; then
-        sudo apt-get update && sudo apt-get install -y tmux
-    else
-        echo "This Linux distribution is not supported."
-        exit 1
-    fi
+  if uname -a 2>/dev/null | grep -q "arch"; then
+    echo "Installing tmux via pacman ..."
+    sudo pacman -S tmux
+  elif uname -a 2>/dev/null | grep -q "Debian"; then
+    sudo apt-get update && sudo apt-get install -y tmux
+  else
+    echo "This Linux distribution is not supported."
+    exit 1
+  fi
 elif [[ "$(uname)" == "Darwin" ]]; then
-    brew install tmux
+  brew install tmux
 else
-    echo "This OS is not supported."
+  echo "This OS is not supported."
 fi
