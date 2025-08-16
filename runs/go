@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
-brew install go
-
-
+if [[ "$(uname)" == "Linux" ]]; then
+    if uname -a 2>/dev/null | grep -q "arch"; then
+        sudo pacman -S go
+    fi
+elif [[ "$(uname)" == "Darwin" ]]; then
+    brew install go
+else
+    echo "This OS is not supported."
+fi
