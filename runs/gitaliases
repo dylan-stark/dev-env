@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+git config --global alias.log "log --decorate --graph --oneline"
+git config --global alias.logall "log --decorate --graph --oneline --all"
+git config --global alias.loghere "log --decorate --graph --oneline"
