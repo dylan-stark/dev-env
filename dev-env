@@ -38,7 +38,25 @@ find_dirs() {
     echo $dirs
 }
 
+# Copies dir
+# - `to` is forcefully removed!!!
+# - `from` is copied over
 copy_dir() {
+    from=$1
+    to=$2
+    from_dir=$(dirname $from)
+    from_name=$(basename $from)
+
+    pushd $from_dir > /dev/null
+    execute rm -rf $to
+    execute cp -r $from_name $(dirname $to)/.
+    popd > /dev/null
+}
+
+# Copies all subdirs
+# - All subdirs in `to` are forcefully removed
+# - All subdirs in `from` are copied over
+copy_subdirs() {
     from=$1
     to=$2
 
@@ -60,10 +78,18 @@ copy_file() {
     execute cp -r $from $to/$name
 }
 
-copy_dir .config ${HOME}/.config
-copy_dir .local ${HOME}/.local
 copy_file env/.zprofile ${HOME}
 copy_file env/.ready-tmux ${HOME}
+copy_subdirs .local ${HOME}/.local
+
+copy_dir .config/nvim ${HOME}/.config/nvim
+copy_dir .config/tmux ${HOME}/.config/tmux
+if [[ "$(uname)" == "Linux" ]]; then
+    if uname -a 2>/dev/null | grep -q "arch"; then
+        copy_dir .config/hypr ${HOME}/.config/hypr
+        execute hyprctl reload
+    fi
+fi
 
 if [[ -d ${ZSH_CUSTOM} ]]; then
     copy_file env/oh-my-zsh.zsh ${ZSH_CUSTOM}
