@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Install perf
+if [[ "$(uname)" == "Linux" ]]; then
+    if uname -a 2>/dev/null | grep -q "arch"; then
+        sudo pacman -S perf
+    fi
+else
+    echo "This OS is not supported."
+fi
+
+# Install inferno
+cargo install --root ${HOME}/.local inferno
+
