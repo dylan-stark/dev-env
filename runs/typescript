@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
 
-brew install typescript yarn
 
+if [[ "$(uname)" == "Linux" ]]; then
+    if uname -a 2>/dev/null | grep -q "arch"; then
+        sudo pacman -S typescript-language-server yarn
+    fi
+elif [[ "$(uname)" == "Darwin" ]]; then
+    brew install typescript yarn
+else
+    echo "This OS is not supported."
+fi
