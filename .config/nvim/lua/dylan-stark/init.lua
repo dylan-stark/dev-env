@@ -61,7 +61,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     bufmap('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<cr>')
 
     -- Toggle inlay hints
-    bufmap('n', 'i', '<cmd> lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>')
+    bufmap('n', '<leader>i', '<cmd> lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>')
   end
 })
 
