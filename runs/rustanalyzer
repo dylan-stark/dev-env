@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Install perf
+if [[ "$(uname)" == "Linux" ]]; then
+    if uname -a 2>/dev/null | grep -q "arch"; then
+        sudo pacman -S rust-analyzer
+    fi
+else
+    echo "This OS is not supported."
+fi
+
