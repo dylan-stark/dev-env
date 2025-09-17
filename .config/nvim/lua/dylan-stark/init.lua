@@ -59,6 +59,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Selects a code action available at the current cursor position
     bufmap('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<cr>')
+
+    -- Toggle inlay hints
+    bufmap('n', 'i', '<cmd> lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>')
   end
 })
 
