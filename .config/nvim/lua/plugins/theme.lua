@@ -1,0 +1,1 @@
+/home/dylanstark/.config/omarchy/current/theme/neovim.lua
