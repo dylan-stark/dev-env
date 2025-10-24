@@ -6,3 +6,4 @@ yay -S wayvnc tailscale
 echo "Enabling and starting tailscale"
 sudo systemctl enable --now tailscaled
 sudo tailscale up
+
