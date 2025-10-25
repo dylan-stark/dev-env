@@ -9,3 +9,6 @@ export PATH="${PATH}:${HOME}/go/bin"
 
 # Adds volta to PATH
 export PATH="${HOME}/.volta/bin:${PATH}"
+
+# Adds pixi to PATH
+export PATH="/Users/dylanstark/.pixi/bin:$PATH"
