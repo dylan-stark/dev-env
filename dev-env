@@ -78,11 +78,30 @@ copy_file() {
     execute cp -r $from $to/$name
 }
 
+# Symlinks dir
+# - `to` is replaced with a symlink to `from` (absolute path)
+# - If `to` already points at `from`, no-op
+# - If `to` is a regular dir or a symlink elsewhere, it is removed first
+link_dir() {
+    from=$(cd "$1" && pwd)
+    to=$2
+
+    if [[ -L $to && "$(readlink $to)" == "$from" ]]; then
+        log "link_dir $from -> $to (already linked)"
+        return
+    fi
+
+    if [[ -L $to || -e $to ]]; then
+        execute rm -rf $to
+    fi
+    execute ln -s $from $to
+}
+
 copy_file env/.zprofile ${HOME}
 copy_file env/.ready-tmux ${HOME}
 copy_subdirs .local ${HOME}/.local
 
-copy_dir .config/nvim ${HOME}/.config/nvim
+link_dir .config/nvim ${HOME}/.config/nvim
 copy_dir .config/tmux ${HOME}/.config/tmux
 if [[ "$(uname)" == "Linux" ]]; then
     if uname -a 2>/dev/null | grep -q "arch"; then
