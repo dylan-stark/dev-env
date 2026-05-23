@@ -99,6 +99,8 @@ link_dir() {
 
 copy_file env/.zprofile ${HOME}
 copy_file env/.ready-tmux ${HOME}
+copy_file env/.bashrc ${HOME}
+copy_file env/.bash_profile ${HOME}
 copy_subdirs .local ${HOME}/.local
 
 link_dir .config/nvim ${HOME}/.config/nvim

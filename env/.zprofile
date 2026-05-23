@@ -12,3 +12,9 @@ export PATH="${HOME}/.volta/bin:${PATH}"
 
 # Adds pixi to PATH
 export PATH="/Users/dylanstark/.pixi/bin:$PATH"
+
+# Adds task completions
+
+# export TASK_EXE='go-task' if needed
+alias task="go-task"
+eval "$(task --completion zsh)"
