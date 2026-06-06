@@ -28,3 +28,5 @@ export PATH="/opt/nvidia/nsight-systems/2026.2.1/bin:$PATH"
 # export TASK_EXE='go-task' if needed
 alias task="go-task"
 eval "$(task --completion bash)"
+
+eval "$(direnv hook bash)"
