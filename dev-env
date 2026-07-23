@@ -69,6 +69,23 @@ copy_subdirs() {
     popd > /dev/null
 }
 
+# Symlinks all subdirs
+# - Each subdir in `from` gets a symlink at `to/<subdir>` pointing at it (see link_dir)
+# - `to` is created if it doesn't exist
+link_subdirs() {
+    from=$1
+    to=$2
+
+    execute mkdir -p $to
+
+    pushd $from > /dev/null
+    dirs=$(find_dirs)
+    for dir in $dirs; do
+        link_dir $dir $to/$dir
+    done
+    popd > /dev/null
+}
+
 copy_file() {
     from=$1
     to=$2
@@ -102,6 +119,7 @@ copy_file env/.ready-tmux ${HOME}
 copy_file env/.bashrc ${HOME}
 copy_file env/.bash_profile ${HOME}
 copy_subdirs .local ${HOME}/.local
+link_subdirs .claude/skills ${HOME}/.claude/skills
 
 link_dir .config/nvim ${HOME}/.config/nvim
 copy_dir .config/tmux ${HOME}/.config/tmux
