@@ -125,7 +125,7 @@ link_dir .config/nvim ${HOME}/.config/nvim
 copy_dir .config/tmux ${HOME}/.config/tmux
 if [[ "$(uname)" == "Linux" ]]; then
     if uname -a 2>/dev/null | grep -q "arch"; then
-        copy_dir .config/hypr ${HOME}/.config/hypr
+        link_dir .config/hypr ${HOME}/.config/hypr
         execute hyprctl reload
     fi
 fi
