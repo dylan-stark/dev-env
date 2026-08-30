@@ -5,7 +5,7 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Variables/#input
 hl.config({
   input = {
-    kb_options = "caps:swapescape",
+    kb_options = "caps:swapescape,compose:ralt",
 
     -- Change speed of keyboard repeat.
     repeat_rate = 40,

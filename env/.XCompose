@@ -1,0 +1,22 @@
+include "%L"
+
+# Emoji (Compose key + mnemonic sequence)
+<Multi_key> <colon> <parenright>        : "🙂" U1F642  # slightly smiling
+<Multi_key> <colon> <D>                 : "😀" U1F600  # grinning
+<Multi_key> <colon> <parenleft>         : "🙁" U1F641  # frowning
+<Multi_key> <semicolon> <parenright>    : "😉" U1F609  # winking
+<Multi_key> <less> <3>                  : "❤" U2764   # heart
+<Multi_key> <less> <slash> <3>          : "💔" U1F494  # broken heart
+<Multi_key> <t> <u>                     : "👍" U1F44D  # thumbs up
+<Multi_key> <t> <d>                     : "👎" U1F44E  # thumbs down
+<Multi_key> <c> <l>                     : "👏" U1F44F  # clap
+<Multi_key> <e> <y>                     : "👀" U1F440  # eyes
+<Multi_key> <f> <i>                     : "🔥" U1F525  # fire
+<Multi_key> <s> <t>                     : "⭐" U2B50   # star
+<Multi_key> <p> <a>                     : "🎉" U1F389  # party
+<Multi_key> <t> <h>                     : "🤔" U1F914  # thinking
+<Multi_key> <c> <r>                     : "😢" U1F622  # crying
+<Multi_key> <o> <k>                     : "✅" U2705   # check mark
+<Multi_key> <x> <x>                     : "❌" U274C   # cross mark
+<Multi_key> <1> <0> <0>                 : "💯" U1F4AF  # hundred points
+<Multi_key> <s> <k>                     : "💀" U1F480  # skull
