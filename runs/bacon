@@ -1,3 +1,16 @@
 #!/usr/bin/env bash
 
-brew install bacon
+# Install bacon
+if [[ "$(uname)" == "Linux" ]]; then
+    if uname -a 2>/dev/null | grep -q "arch"; then
+        sudo pacman -S --needed --noconfirm bacon
+    else
+        echo "This Linux distribution is not supported."
+        exit 1
+    fi
+elif [[ "$(uname)" == "Darwin" ]]; then
+    brew install bacon
+else
+    echo "This OS is not supported."
+    exit 1
+fi
