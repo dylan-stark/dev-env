@@ -27,3 +27,7 @@ require("default.hypr.toggles")
 
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
+
+-- elemata (~/projects/elemata): keep focus in the terminal when `cargo watch -x run`
+-- relaunches the window.
+o.window({ title = "^elemata$" }, { no_initial_focus = true, focus_on_activate = false })
