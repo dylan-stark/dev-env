@@ -1,3 +1,12 @@
 #!/usr/bin/env bash
 
-brew install go-task/tap/go-task
+if [[ "$(uname)" == "Darwin" ]]; then
+    # The homebrew-core formula installs the binary as `task`
+    brew install go-task
+
+    # Also expose it as `go-task`
+    bin_dir="$(brew --prefix)/bin"
+    ln -sf "$bin_dir/task" "$bin_dir/go-task"
+else
+    brew install go-task/tap/go-task
+fi
