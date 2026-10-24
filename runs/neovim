@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+NVIM_TAG="v0.12.6"
+NVIM_DIR="${HOME}/projects/neovim-${NVIM_TAG}"
+
+if [[ -e ${NVIM_DIR} ]]; then
+    echo "${NVIM_DIR} already exists, so neovim ${NVIM_TAG} looks to be built already."
+    echo "To rebuild anyway, remove it manually first: rm -rf ${NVIM_DIR}"
+    exit 1
+fi
+
 if [[ "$(uname)" == "Linux" ]]; then
     if lsb_release -a 2>/dev/null | grep -q "Debian"; then
         sudo apt-get update && sudo apt-get install -y cmake gettext lua5.4-dev liblua5.4-dev
@@ -13,8 +22,8 @@ else
     echo "This OS is not supported."
 fi
 
-git clone -b v0.10.2 https://github.com/neovim/neovim.git ${HOME}/projects/neovim
+git clone -b ${NVIM_TAG} https://github.com/neovim/neovim.git ${NVIM_DIR}
 
-cd ${HOME}/projects/neovim
+cd ${NVIM_DIR}
 make CMAKE_BUILD_TYPE="RelWithDebInfo"
 sudo make install
