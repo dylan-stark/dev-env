@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+# Report what rust-analyzer is doing for a Rust file, as seen from Neovim.
+#
+# Usage:
+#   scripts/nvim-rust-doctor <file.rs> [wait_secs]
+#
+# Opens the file in headless Neovim with the normal config, waits for
+# rust-analyzer to settle (default 45s), then prints the attached server,
+# diagnostics, highlight extmarks (including any `unresolvedReference`
+# semantic tokens, which render as red undercurls without a diagnostic), and
+# the analyzer's workspace status.
+
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+    echo "usage: $(basename "$0") <file.rs> [wait_secs]" >&2
+    exit 2
+fi
+
+file=$(cd "$(dirname "$1")" && pwd)/$(basename "$1")
+wait_secs=${2:-45}
+
+if [[ ! -f $file ]]; then
+    echo "no such file: $file" >&2
+    exit 2
+fi
+
+cd "$(dirname "$file")"
+
+echo "== toolchain"
+rustup show active-toolchain 2>&1 || true
+echo "rustup which: $(rustup which rust-analyzer 2>&1 || true)"
+echo
+
+lua=$(mktemp -t nvim-rust-doctor.XXXXXX)
+trap 'rm -f "$lua"' EXIT
+
+cat >"$lua" <<'LUA'
+local function out(...)
+  io.stdout:write(table.concat(vim.tbl_map(tostring, { ... }), " "), "\n")
+end
+
+local function report()
+  local buf = vim.api.nvim_get_current_buf()
+
+  out("== lsp clients")
+  local clients = vim.lsp.get_clients({ bufnr = buf })
+  if #clients == 0 then
+    out("none attached")
+  end
+  for _, c in ipairs(clients) do
+    local cmd = type(c.config.cmd) == "table" and c.config.cmd or {}
+    out(c.name, cmd[1] or "<rpc>")
+    if cmd[1] then
+      out("  version:", vim.trim(vim.fn.system({ cmd[1], "--version" })))
+    end
+    if cmd[3] then
+      out("  log:", cmd[3])
+    end
+  end
+
+  out("\n== diagnostics")
+  local diags = vim.diagnostic.get(buf)
+  out("count:", #diags)
+  for i = 1, math.min(#diags, 20) do
+    local d = diags[i]
+    out(("  %d:%d [%s] %s: %s"):format(d.lnum + 1, d.col + 1, vim.diagnostic.severity[d.severity],
+      d.source or "?", (d.message:gsub("\n.*", ""))))
+  end
+
+  out("\n== highlight extmarks")
+  local ns_names = {}
+  for name, id in pairs(vim.api.nvim_get_namespaces()) do
+    ns_names[id] = name
+  end
+  local counts, unresolved = {}, {}
+  for _, m in ipairs(vim.api.nvim_buf_get_extmarks(buf, -1, 0, -1, { details = true })) do
+    local d = m[4]
+    if d.hl_group then
+      local key = ("%s  %s"):format(ns_names[d.ns_id] or d.ns_id, d.hl_group)
+      counts[key] = (counts[key] or 0) + 1
+      if d.hl_group:find("unresolvedReference", 1, true) and d.end_row == m[2] then
+        local line = vim.api.nvim_buf_get_lines(buf, m[2], m[2] + 1, false)[1] or ""
+        table.insert(unresolved, ("%d:%s"):format(m[2] + 1, line:sub(m[3] + 1, d.end_col)))
+      end
+    end
+  end
+  local keys = vim.tbl_keys(counts)
+  table.sort(keys)
+  for _, k in ipairs(keys) do
+    out(("  %4d  %s"):format(counts[k], k))
+  end
+  out("unresolved references:", #unresolved)
+  if #unresolved > 0 then
+    out("  " .. table.concat(unresolved, "  "))
+  end
+
+  local ra = vim.lsp.get_clients({ bufnr = buf, name = "rust-analyzer" })[1]
+  if ra then
+    out("\n== rust-analyzer status")
+    local res = ra:request_sync("rust-analyzer/analyzerStatus",
+      { textDocument = { uri = vim.uri_from_bufnr(buf) } }, 20000, buf)
+    local status = res and (res.result or vim.inspect(res.err)) or "timed out"
+    -- Everything up to the client capabilities dump is the useful part.
+    out((status:gsub("\n%s*caps:.*", "")))
+  end
+end
+
+vim.defer_fn(function()
+  local ok, err = pcall(report)
+  if not ok then
+    out("doctor failed:", err)
+  end
+  vim.cmd("qa!")
+end, tonumber(vim.env.DOCTOR_WAIT_MS))
+LUA
+
+DOCTOR_WAIT_MS=$((wait_secs * 1000)) nvim --headless "$file" -c "luafile $lua" 2>&1
