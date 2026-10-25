@@ -8,7 +8,9 @@ if [[ "$(uname)" == "Linux" ]]; then
         # (cargo, rustfmt and clippy are provided by `rust`, not separate packages)
         pkgs=()
         for p in rust rust-src rust-analyzer; do
-            if pacman -Qq "$p" &>/dev/null; then
+            # `-Qq` also resolves provides, and rustup itself provides all of
+            # these, so compare the real package name it returns.
+            if [[ "$(pacman -Qq "$p" 2>/dev/null)" == "$p" ]]; then
                 pkgs+=("$p")
             fi
         done
