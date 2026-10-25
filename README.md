@@ -17,7 +17,8 @@ Neovim runs the rust-analyzer that ships with each project's toolchain
 (`rustup which rust-analyzer`, which honours `rust-toolchain.toml`) and falls
 back to Mason's copy when that toolchain has no rust-analyzer component. See
 `.config/nvim/lua/plugins/rust.lua`. The server it picked is shown in a
-notification when it starts.
+notification when it starts. Diagnostics come from bacon-ls (`cargo clippy`
+via headless bacon), not rust-analyzer; see `.config/nvim/lua/config/options.lua`.
 
 **Symptom:** red undercurls everywhere, but `<leader>cd` / `]d` show no
 diagnostics. Those are `unresolvedReference` semantic tokens, not
