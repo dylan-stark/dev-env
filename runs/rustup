@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -e
+
+# Install rustup and a default stable toolchain
+if [[ "$(uname)" == "Linux" ]]; then
+    if uname -a 2>/dev/null | grep -q "arch"; then
+        # Remove pacman-managed Rust packages that conflict with rustup
+        # (cargo, rustfmt and clippy are provided by `rust`, not separate packages)
+        pkgs=()
+        for p in rust rust-src rust-analyzer; do
+            if pacman -Qq "$p" &>/dev/null; then
+                pkgs+=("$p")
+            fi
+        done
+        if [[ ${#pkgs[@]} -gt 0 ]]; then
+            sudo pacman -Rdd --noconfirm "${pkgs[@]}"
+        fi
+
+        sudo pacman -S --needed --noconfirm rustup
+    else
+        echo "This Linux distribution is not supported."
+        exit 1
+    fi
+elif [[ "$(uname)" == "Darwin" ]]; then
+    if ! command -v rustup &>/dev/null; then
+        brew install rustup
+    fi
+else
+    echo "This OS is not supported."
+    exit 1
+fi
+
+# rustup has no default toolchain until one is chosen. Neovim prefers the
+# analyzer matching each project's toolchain (see .config/nvim/lua/plugins/rust.lua);
+# pinned toolchains from rust-toolchain.toml need their own `--toolchain <name>` install.
+rustup default stable
+rustup component add rust-src rust-analyzer rustfmt clippy
