@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+# Usage:
+#   ./sync        # Pull latest main (rebase + autostash), then re-apply configs via ./dev-env
+#   ./sync --dry  # For dry run
+
+script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+dry="0"
+
+while [[ $# > 0 ]]; do
+    if [[ $1 == "--dry" ]]; then
+        dry="1"
+    fi
+    shift
+done
+
+log() {
+    if [[ $dry == "1" ]]; then
+        echo "[DRY_RUN]: $@"
+    else
+        echo "$@"
+    fi
+}
+
+execute() {
+    log "execute $@"
+    if [[ $dry == "1" ]]; then
+        return
+    fi
+
+    "$@"
+}
+
+log "---------- sync ----------"
+
+cd $script_dir
+
+git fetch --quiet || { echo "git fetch failed"; exit 1; }
+
+if [[ -n "$(git status --porcelain)" ]]; then
+    echo "Uncommitted changes (autostash will carry them across the pull):"
+    git status --short
+fi
+
+if ! execute git pull --rebase --autostash; then
+    echo
+    echo "Pull failed. Resolve the conflicts, then \`git rebase --continue\` (or \`git stash pop\`)."
+    echo "lazy-lock.json: take the newer side and run :Lazy restore; don't hand-merge it."
+    exit 1
+fi
+
+if [[ $dry == "1" ]]; then
+    ./dev-env --dry
+else
+    execute ./dev-env
+fi
+
+echo
+git status -sb | head -1
+if [[ -n "$(git log --oneline @{u}..HEAD 2>/dev/null)" ]]; then
+    echo "Unpushed commits. Push them so the other machine sees them:"
+    git log --oneline @{u}..HEAD
+fi
