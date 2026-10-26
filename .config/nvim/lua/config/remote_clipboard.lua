@@ -49,6 +49,11 @@ function M.setup()
     return
   end
 
+  -- Local macOS has pbcopy/pbpaste; OSC 52 paste queries just error under tmux.
+  if vim.fn.has("mac") == 1 and not in_ssh then
+    return
+  end
+
   local osc52 = require("vim.ui.clipboard.osc52")
   local has_wayland = vim.env.WAYLAND_DISPLAY ~= nil
     and vim.fn.executable("wl-copy") == 1
