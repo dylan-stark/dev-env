@@ -2,8 +2,8 @@
 -- every copy is emitted as OSC 52 (inside tmux this becomes a tmux buffer,
 -- rebroadcast to every attached client, local or SSH). Paste prefers the
 -- local Wayland clipboard when one is available, so content copied in other
--- apps remains pasteable; without a display, paste is an OSC 52 query that
--- tmux (or the terminal) answers.
+-- apps remains pasteable; without a display, paste reads the tmux buffer
+-- (or falls back to an OSC 52 query outside tmux).
 local M = {}
 
 local function proc_lines(pid, file)
@@ -79,6 +79,14 @@ function M.setup()
 
   local function paste(register)
     if not has_wayland then
+      -- tmux never answers OSC 52 queries, so read its top buffer instead
+      -- (copies land there via set-clipboard on).
+      if in_tmux and vim.fn.executable("tmux") == 1 then
+        return function()
+          local lines = vim.fn.systemlist({ "tmux", "save-buffer", "-" }, "", 1)
+          return vim.v.shell_error == 0 and lines or {}
+        end
+      end
       return osc52.paste(register)
     end
 
